@@ -4,7 +4,7 @@ from io import BytesIO
 from PIL import Image, ImageTk
 import requests
 import customtkinter as ctk
-from pytube_service_class import *
+from PyTubeServiceModule import *
 
 
 # Downloader GUI Class
