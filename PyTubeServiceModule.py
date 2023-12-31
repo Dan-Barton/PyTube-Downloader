@@ -2,6 +2,7 @@ from pytube import YouTube, Playlist
 import os
 import subprocess
 from moviepy.editor import AudioFileClip
+import datetime
 
 # TEST VIDEO AND PLAYLIST
 
@@ -15,11 +16,11 @@ def update_pytube() -> None:
     except subprocess.CalledProcessError:
         pass
 
-# Return video title and length in seconds from link as string list
+# Return video title and length formatted as hh:mm:ss
 def get_video_info(link: str) -> [str]:
     yt = YouTube(link)
     title = yt.title
-    length = yt.length
+    length = str(datetime.timedelta(seconds=yt.length))
 
     return title, length
 

@@ -203,7 +203,7 @@ class YouTubeDownloaderApp:
     def display_video_info(self, link: str) -> None:
         self.video_label.configure(text=f"   VIDEO DOWNLOADED TO DOWNLOADS FOLDER\n\n"
                                         f"   TITLE: {get_video_info(link)[0]} \n"
-                                        f"   LENGTH: {get_video_info(link)[1]} seconds"
+                                        f"   LENGTH: {get_video_info(link)[1]}"
                                    )
 
     # Displays playlist info message in relevant label
