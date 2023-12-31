@@ -43,7 +43,7 @@ class YouTubeDownloaderApp:
         self.spacing_label.grid(row=1, column=0)
 
         # Initialize combo box and set visual parameters
-        # The selection() method handles combo box input to update selected_option variable
+        # Combo box updates selected_option class variable
         self.selected_option = ctk.StringVar(value="")
         self.option_box = ctk.CTkComboBox(master=self.main_frame, width=160, height=10,
                                           corner_radius=10, values=DOWNLOAD_OPTIONS,
