@@ -105,33 +105,41 @@ class YouTubeDownloaderApp:
                                         font=("Arial narrow", 17), text_color=VERDANT_GREEN, justify="left")
         self.video_label.grid(row=7, column=0, sticky="nw", padx=30, columnspan=2)
 
+    # Main download function, handles widgets during download state as well as download thread
+    def download_func(self) -> None:
+        # Start downloading process as a separate thread to avoid freezing
+        download_thread = Thread(target=self.download_content, daemon=True)
+        download_thread.start()
+
+        # Handle GUI elements during download
+        self.on_download_start()
+
     # Considers selection options and calls relevant service class and info methods
     def download_content(self) -> None:
         try:
-            # Store video URL and current quality selection
+            # Store video URL, download option selection, and current quality selection
             url = self.url_entry.get()
             quality = self.selected_quality.get()
+            selected_option = self.selected_option.get()
 
-            # Depending on combo box and quality selection, calls relevant video/playlist - mp3/mp4 method
-                # and passes relevant parameters
-            # Displays thumbnail info
-            # Configures info message with video/playlist info using relevant info function
-            if self.selected_option.get() == DOWNLOAD_OPTION_1_VIDEO_MP4:
+            # Depending on combo box and quality selection, calls relevant video/playlist - mp3/mp4 method and passes
+                # relevant parameters
+            if selected_option == DOWNLOAD_OPTION_1_VIDEO_MP4:
                 download_as_mp4(url, quality)
                 self.display_video_info(url)
                 self.display_thumbnail_from_url(get_thumbnail(url))
-            elif self.selected_option.get() == DOWNLOAD_OPTION_2_VIDEO_MP3:
+            elif selected_option == DOWNLOAD_OPTION_2_VIDEO_MP3:
                 download_as_mp3(url)
                 self.display_video_info(url)
                 self.display_thumbnail_from_url(get_thumbnail(url))
             # Playlist methods define folder_name to be displayed in info message (mp3/mp4 content in folder)
             # Name consists of playlist title and relevant mp3 or mp4 suffix
-            elif self.selected_option.get() == DOWNLOAD_OPTION_3_PLAYLIST_MP4:
+            elif selected_option == DOWNLOAD_OPTION_3_PLAYLIST_MP4:
                 download_playlist_as_mp4(url, quality)
                 folder_name = f"{get_playlist_info(url)[0]} (mp4)"
                 self.display_playlist_info(url, folder_name)
                 self.display_thumbnail_from_url(get_thumbnail(url))
-            elif self.selected_option.get() == DOWNLOAD_OPTION_4_PLAYLIST_MP3:
+            elif selected_option == DOWNLOAD_OPTION_4_PLAYLIST_MP3:
                 download_playlist_as_mp3(url)
                 folder_name = f"{get_playlist_info(url)[0]} (mp3)"
                 self.display_playlist_info(url, folder_name)
@@ -142,22 +150,11 @@ class YouTubeDownloaderApp:
         # In case of exception, request valid URL for the selected download type
         except Exception:
             self.error_info_label.configure(text="Enter a valid type URL!")
-        # Upon completion, stop and hide progressbar
-        # Re-enabled buttons
-        # Clear link entry
+        # Clean up GUI after download
         finally:
-            self.progressbar.stop()
-            self.progressbar.place_forget()
-            self.download_button.configure(state="normal")
-            self.url_entry.configure(state="normal")
-            self.url_entry.delete(0, ctk.END)
+            self.on_download_end()
 
-    # Main download function, handles widgets during download state as well as download thread
-    def download_func(self) -> None:
-        # Start downloading process as a separate thread to avoid freezing
-        download_thread = Thread(target=self.download_content, daemon=True)
-        download_thread.start()
-
+    def on_download_start(self):
         # Disable download button and entry field
         self.download_button.configure(state="disabled")
         self.url_entry.configure(state="disabled")
@@ -168,6 +165,19 @@ class YouTubeDownloaderApp:
         self.error_info_label.configure(text="")
         # Reset Info Message
         self.video_label.configure(image="", text="")
+
+        # Update frame
+        self.main_frame.update()
+
+    def on_download_end(self):
+        # Stop and hide progressbar
+        self.progressbar.stop()
+        self.progressbar.place_forget()
+        # Re-enabled buttons
+        self.download_button.configure(state="normal")
+        self.url_entry.configure(state="normal")
+        # Clear link entry
+        self.url_entry.delete(0, ctk.END)
 
         # Update frame
         self.main_frame.update()
