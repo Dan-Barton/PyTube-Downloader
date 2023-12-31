@@ -227,6 +227,7 @@ class YouTubeDownloaderApp:
 
 
 # Main method constructs and runs YouTubeDownloaderApp with a CTk app as master
+# Called in driver file main.py if run as script
 def main() -> None:
     app = ctk.CTk()
     YouTubeDownloaderApp(app).mainloop()
