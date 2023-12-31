@@ -1,14 +1,19 @@
-import traceback
-from threading import Thread
+import customtkinter as ctk
 from io import BytesIO
 from PIL import Image, ImageTk
+
+from threading import Thread
 import requests
-import customtkinter as ctk
+import traceback
+
 from PyTubeServiceModule import *
+from config import *
 
 
 # Downloader GUI Class
 # Constructed with modifying blank main CTk app
+# Constants used found in config.py
+
 class YouTubeDownloaderApp:
     # Constructs GUI and all widgets/elements on blank master CTk app
     def __init__(self, master: ctk.CTk) -> None:
@@ -19,8 +24,8 @@ class YouTubeDownloaderApp:
         # Initialize root window
         self.root = master
         self.root.resizable(False, False)
-        self.root.geometry("620x460")
-        self.root.title("YouTube Video Downloader")
+        self.root.geometry(SCREEN_SIZE)
+        self.root.title(TITLE)
 
         # Initialize main frame
         self.main_frame = ctk.CTkFrame(master=self.root)
@@ -30,20 +35,18 @@ class YouTubeDownloaderApp:
 
         # Set up title to appear in intro_label
         self.intro_label = ctk.CTkLabel(master=self.main_frame, text="PyTube Video Downloader",
-                                        font=("Arial bold", 22), text_color="#00F904")
+                                        font=("Arial bold", 22), text_color=VERDANT_GREEN)
         self.intro_label.grid(row=0, column=0, columnspan=2, pady=10)
 
         # Add void spacing label
         self.spacing_label = ctk.CTkLabel(master=self.main_frame, text="", height=20)
         self.spacing_label.grid(row=1, column=0)
 
-        # Options in combo box
-        options = ["Video as .mp4", "Video as .mp3", "Playlist as .mp4's", "Playlist as .mp3's"]
         # Initialize combo box and set visual parameters
         # The selection() method handles combo box input to update selected_option variable
         self.selected_option = ""
         self.option_box = ctk.CTkComboBox(master=self.main_frame, width=160, height=10,
-                                          corner_radius=10, values=options,
+                                          corner_radius=10, values=DOWNLOAD_OPTIONS,
                                           state="readonly", justify="center", font=("Arial bold", 14),
                                           text_color="black",
                                           fg_color="light green", button_color="light green",
@@ -76,7 +79,7 @@ class YouTubeDownloaderApp:
         # URL entry space placed at the center of the screen below the selection options
         # Formatted and placeholder instruction value set
         self.url_entry = ctk.CTkEntry(master=self.main_frame, width=420, corner_radius=10, border_width=2,
-                                      font=("Arial", 14), text_color="#00F904",
+                                      font=("Arial", 14), text_color=VERDANT_GREEN,
                                       placeholder_text="Enter YouTube Video or Playlist URL")
         self.url_entry.grid(row=5, column=0, pady=30, sticky="e")
 
@@ -88,7 +91,7 @@ class YouTubeDownloaderApp:
         self.download_button.grid(row=5, column=1, sticky="w")
 
         # Declare indeterminate progressbar to serve as loading animation
-        self.progressbar = ctk.CTkProgressBar(master=self.main_frame, mode="indeterminate", progress_color="#00F904",
+        self.progressbar = ctk.CTkProgressBar(master=self.main_frame, mode="indeterminate", progress_color=VERDANT_GREEN,
                                               corner_radius=0)
 
         # Add error label below entry field, will display relevant error message as determined in download_func
@@ -99,20 +102,13 @@ class YouTubeDownloaderApp:
 
         # Format and place video info label, stores both thumbnail image and text info
         self.video_label = ctk.CTkLabel(master=self.main_frame, image=None, text="", compound=ctk.LEFT,
-                                        font=("Arial narrow", 17), text_color="#00F904", justify="left")
+                                        font=("Arial narrow", 17), text_color=VERDANT_GREEN, justify="left")
         self.video_label.grid(row=7, column=0, sticky="nw", padx=30, columnspan=2)
 
-    # Selection function translates combo box choice to an easy to handle selected_option string
-    # that corresponds to video/playlist as mp3/mp4
+    # Store combo box choice in selected_option var
+    # config.py values used
     def selection(self, choice: str) -> None:
-        if choice == "Video as .mp4":
-            self.selected_option = "v4"
-        elif choice == "Video as .mp3":
-            self.selected_option = "v3"
-        elif choice == "Playlist as .mp4's":
-            self.selected_option = "p4"
-        elif choice == "Playlist as .mp3's":
-            self.selected_option = "p3"
+        self.selected_option = choice
 
     # Considers selection options and calls relevant service class and info methods
     def download_content(self) -> None:
@@ -125,22 +121,22 @@ class YouTubeDownloaderApp:
                 # and passes relevant parameters
             # Displays thumbnail info
             # Configures info message with video/playlist info using relevant info function
-            if self.selected_option == "v4":
+            if self.selected_option == DOWNLOAD_OPTION_1_VIDEO_MP4:
                 download_as_mp4(url, quality)
                 self.display_video_info(url)
                 self.display_thumbnail_from_url(get_thumbnail(url))
-            elif self.selected_option == "v3":
+            elif self.selected_option == DOWNLOAD_OPTION_2_VIDEO_MP3:
                 download_as_mp3(url)
                 self.display_video_info(url)
                 self.display_thumbnail_from_url(get_thumbnail(url))
             # Playlist methods define folder_name to be displayed in info message (mp3/mp4 content in folder)
             # Name consists of playlist title and relevant mp3 or mp4 suffix
-            elif self.selected_option == "p4":
+            elif self.selected_option == DOWNLOAD_OPTION_3_PLAYLIST_MP4:
                 download_playlist_as_mp4(url, quality)
                 folder_name = f"{get_playlist_info(url)[0]} (mp4)"
                 self.display_playlist_info(url, folder_name)
                 self.display_thumbnail_from_url(get_thumbnail(url))
-            elif self.selected_option == "p3":
+            elif self.selected_option == DOWNLOAD_OPTION_4_PLAYLIST_MP3:
                 download_playlist_as_mp3(url)
                 folder_name = f"{get_playlist_info(url)[0]} (mp3)"
                 self.display_playlist_info(url, folder_name)

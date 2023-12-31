@@ -1,7 +1,8 @@
+from moviepy.editor import AudioFileClip
 from pytube import YouTube, Playlist
+
 import os
 import subprocess
-from moviepy.editor import AudioFileClip
 import datetime
 
 # TEST VIDEO AND PLAYLIST
