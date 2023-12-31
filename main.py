@@ -44,14 +44,14 @@ class YouTubeDownloaderApp:
 
         # Initialize combo box and set visual parameters
         # The selection() method handles combo box input to update selected_option variable
-        self.selected_option = ""
+        self.selected_option = ctk.StringVar(value="")
         self.option_box = ctk.CTkComboBox(master=self.main_frame, width=160, height=10,
                                           corner_radius=10, values=DOWNLOAD_OPTIONS,
                                           state="readonly", justify="center", font=("Arial bold", 14),
-                                          text_color="black",
+                                          text_color="black", variable=self.selected_option,
                                           fg_color="light green", button_color="light green",
                                           border_color="light green",
-                                          dropdown_text_color="light green", command=self.selection)
+                                          dropdown_text_color="light green")
         # Set initial instructing value
         self.option_box.set("Download Type")
         self.option_box.grid(row=2, column=0, sticky="w", padx=20)
@@ -105,11 +105,6 @@ class YouTubeDownloaderApp:
                                         font=("Arial narrow", 17), text_color=VERDANT_GREEN, justify="left")
         self.video_label.grid(row=7, column=0, sticky="nw", padx=30, columnspan=2)
 
-    # Store combo box choice in selected_option var
-    # config.py values used
-    def selection(self, choice: str) -> None:
-        self.selected_option = choice
-
     # Considers selection options and calls relevant service class and info methods
     def download_content(self) -> None:
         try:
@@ -121,22 +116,22 @@ class YouTubeDownloaderApp:
                 # and passes relevant parameters
             # Displays thumbnail info
             # Configures info message with video/playlist info using relevant info function
-            if self.selected_option == DOWNLOAD_OPTION_1_VIDEO_MP4:
+            if self.selected_option.get() == DOWNLOAD_OPTION_1_VIDEO_MP4:
                 download_as_mp4(url, quality)
                 self.display_video_info(url)
                 self.display_thumbnail_from_url(get_thumbnail(url))
-            elif self.selected_option == DOWNLOAD_OPTION_2_VIDEO_MP3:
+            elif self.selected_option.get() == DOWNLOAD_OPTION_2_VIDEO_MP3:
                 download_as_mp3(url)
                 self.display_video_info(url)
                 self.display_thumbnail_from_url(get_thumbnail(url))
             # Playlist methods define folder_name to be displayed in info message (mp3/mp4 content in folder)
             # Name consists of playlist title and relevant mp3 or mp4 suffix
-            elif self.selected_option == DOWNLOAD_OPTION_3_PLAYLIST_MP4:
+            elif self.selected_option.get() == DOWNLOAD_OPTION_3_PLAYLIST_MP4:
                 download_playlist_as_mp4(url, quality)
                 folder_name = f"{get_playlist_info(url)[0]} (mp4)"
                 self.display_playlist_info(url, folder_name)
                 self.display_thumbnail_from_url(get_thumbnail(url))
-            elif self.selected_option == DOWNLOAD_OPTION_4_PLAYLIST_MP3:
+            elif self.selected_option.get() == DOWNLOAD_OPTION_4_PLAYLIST_MP3:
                 download_playlist_as_mp3(url)
                 folder_name = f"{get_playlist_info(url)[0]} (mp3)"
                 self.display_playlist_info(url, folder_name)
