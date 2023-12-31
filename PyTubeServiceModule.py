@@ -20,6 +20,7 @@ def get_video_info(link: str) -> [str]:
     yt = YouTube(link)
     title = yt.title
     length = yt.length
+
     return title, length
 
 # Return playlist title and length (number of videos) from link as string list
@@ -33,6 +34,7 @@ def get_playlist_info(link: str) -> [str]:
 # Return video/playlist thumbnail JPEG URL from link
 def get_thumbnail(link: str) -> str:
     yt = YouTube(link)
+
     return yt.thumbnail_url
 
 # Download video as mp4 in selected resolution to specified or default Downloads DIR
@@ -58,15 +60,18 @@ def download_as_mp3(link: str, target_directory=os.path.join(os.path.expanduser(
     audio_stream = yt.streams.filter(only_audio=True).first()
     # Downloads audio only mp4
     download_file = audio_stream.download(output_path=target_directory)
+
     # Edit file extension
     base, _ = os.path.splitext(download_file)
     new_file = base + '.mp3'
     # Extract audio from audio only mp4
+
     audio_clip = AudioFileClip(download_file)
     # Write audio to new mp3 file
     audio_clip.write_audiofile(new_file, codec='mp3')
     # Close process
     audio_clip.close()
+
     # Remove audio only mp4
     os.remove(download_file)
 

@@ -103,7 +103,7 @@ class YouTubeDownloaderApp:
         self.video_label.grid(row=7, column=0, sticky="nw", padx=30, columnspan=2)
 
     # Selection function translates combo box choice to an easy to handle selected_option string
-        # that corresponds to video/playlist as mp3/mp4
+    # that corresponds to video/playlist as mp3/mp4
     def selection(self, choice: str) -> None:
         if choice == "Video as .mp4":
             self.selected_option = "v4"
@@ -117,27 +117,33 @@ class YouTubeDownloaderApp:
     # Considers selection options and calls relevant service class and info methods
     def download_content(self) -> None:
         try:
-            # Gets video URL
+            # Store video URL and current quality selection
             url = self.url_entry.get()
+            quality = self.selected_quality.get()
+
             # Depending on combo box and quality selection, calls relevant video/playlist - mp3/mp4 method
-            # and passes relevant parameters
+                # and passes relevant parameters
             # Displays thumbnail info
-            # Depending on if video or playlist displays relevant info with respective info function
+            # Configures info message with video/playlist info using relevant info function
             if self.selected_option == "v4":
-                download_as_mp4(url, self.selected_quality.get())
+                download_as_mp4(url, quality)
                 self.display_video_info(url)
                 self.display_thumbnail_from_url(get_thumbnail(url))
             elif self.selected_option == "v3":
                 download_as_mp3(url)
                 self.display_video_info(url)
                 self.display_thumbnail_from_url(get_thumbnail(url))
+            # Playlist methods define folder_name to be displayed in info message (mp3/mp4 content in folder)
+            # Name consists of playlist title and relevant mp3 or mp4 suffix
             elif self.selected_option == "p4":
-                download_playlist_as_mp4(url, self.selected_quality.get())
-                self.display_playlist_info(url)
+                download_playlist_as_mp4(url, quality)
+                folder_name = f"{get_playlist_info(url)[0]} (mp4)"
+                self.display_playlist_info(url, folder_name)
                 self.display_thumbnail_from_url(get_thumbnail(url))
             elif self.selected_option == "p3":
                 download_playlist_as_mp3(url)
-                self.display_playlist_info(url)
+                folder_name = f"{get_playlist_info(url)[0]} (mp3)"
+                self.display_playlist_info(url, folder_name)
                 self.display_thumbnail_from_url(get_thumbnail(url))
             # If no combo box selection, display error without clearing entry field
             else:
@@ -160,6 +166,7 @@ class YouTubeDownloaderApp:
         # Start downloading process as a separate thread to avoid freezing
         download_thread = Thread(target=self.download_content, daemon=True)
         download_thread.start()
+
         # Disable download button and entry field
         self.download_button.configure(state="disabled")
         self.url_entry.configure(state="disabled")
@@ -170,6 +177,7 @@ class YouTubeDownloaderApp:
         self.error_info_label.configure(text="")
         # Reset Info Message
         self.video_label.configure(image="", text="")
+
         # Update frame
         self.main_frame.update()
 
@@ -200,9 +208,10 @@ class YouTubeDownloaderApp:
 
     # Displays playlist info message in relevant label
     # Called upon in download_content to only display (if necessary) when download is complete
-    def display_playlist_info(self, link: str) -> None:
+    # folder_name is passed to display the suffix attached to folder (mp3/mp4)
+    def display_playlist_info(self, link: str, folder_name: str) -> None:
         self.video_label.configure(text=f"   PLAYLIST DOWNLOADED TO "
-                                        f"\n   '{get_playlist_info(link)[0].upper()}' FOLDER"
+                                        f"\n   '{folder_name}' FOLDER"
                                         f"\n   IN DOWNLOADS\n\n"
                                         f"   TITLE: {get_playlist_info(link)[0]} \n"
                                         f"   LENGTH: {get_playlist_info(link)[1]} videos"
