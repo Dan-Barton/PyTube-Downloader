@@ -61,7 +61,8 @@ def download_as_mp3(link: str, target_directory=os.path.join(os.path.expanduser(
     yt = YouTube(link)
     audio_stream = yt.streams.filter(only_audio=True).first()
     # Downloads audio only mp4
-    download_file = audio_stream.download(output_path=target_directory)
+    # Adds "mp3" prefix to distinguish file from mp4 downloads in path
+    download_file = audio_stream.download(output_path=target_directory, filename_prefix="(mp3) ")
 
     # Edit file extension
     base, _ = os.path.splitext(download_file)
