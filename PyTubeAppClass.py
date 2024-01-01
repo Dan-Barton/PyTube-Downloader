@@ -114,46 +114,7 @@ class YouTubeDownloaderApp:
         # Handle GUI elements during download
         self.on_download_start()
 
-    # Considers selection options and calls relevant service class and info methods
-    def download_content(self) -> None:
-        try:
-            # Store video URL, download option selection, and current quality selection
-            url = self.url_entry.get()
-            quality = self.selected_quality.get()
-            selected_option = self.selected_option.get()
-
-            # Depending on combo box and quality selection, calls relevant video/playlist - mp3/mp4 method and passes
-            # relevant parameters
-            if selected_option == DOWNLOAD_OPTION_1_VIDEO_MP4:
-                download_as_mp4(url, quality)
-                self.display_video_info(url)
-                self.display_thumbnail_from_url(get_thumbnail_url(url))
-            elif selected_option == DOWNLOAD_OPTION_2_VIDEO_MP3:
-                download_as_mp3(url)
-                self.display_video_info(url)
-                self.display_thumbnail_from_url(get_thumbnail_url(url))
-            # Playlist methods define folder_name to be displayed in info message (mp3/mp4 content in folder)
-            # Name consists of playlist title and relevant mp3 or mp4 suffix
-            elif selected_option == DOWNLOAD_OPTION_3_PLAYLIST_MP4:
-                download_playlist_as_mp4(url, quality)
-                folder_name = f"{get_playlist_info(url)[0]} (mp4)"
-                self.display_playlist_info(url, folder_name)
-                self.display_thumbnail_from_url(get_thumbnail_url(url))
-            elif selected_option == DOWNLOAD_OPTION_4_PLAYLIST_MP3:
-                download_playlist_as_mp3(url)
-                folder_name = f"{get_playlist_info(url)[0]} (mp3)"
-                self.display_playlist_info(url, folder_name)
-                self.display_thumbnail_from_url(get_thumbnail_url(url))
-            # If no combo box selection, display error without clearing entry field
-            else:
-                self.error_info_label.configure(text="Select a Download Type!")
-        # In case of exception, request valid URL for the selected download type
-        except Exception:
-            self.error_info_label.configure(text="Enter a valid type URL!")
-        # Clean up GUI after download
-        finally:
-            self.on_download_end()
-
+    # Handle GUI elements during download
     def on_download_start(self):
         # Disable download button and entry field
         self.download_button.configure(state="disabled")
@@ -169,6 +130,7 @@ class YouTubeDownloaderApp:
         # Update frame
         self.main_frame.update()
 
+    # Clean up GUI after download
     def on_download_end(self):
         # Stop and hide progressbar
         self.progressbar.stop()
@@ -182,8 +144,56 @@ class YouTubeDownloaderApp:
         # Update frame
         self.main_frame.update()
 
+    # Considers selection options and calls relevant download and error methods
+    def download_content(self) -> None:
+        try:
+            # Store current URL, quality, and download type
+            url = self.url_entry.get()
+            quality = self.selected_quality.get()
+            selected_option = self.selected_option.get()
+
+            # Class method contains logic to download videos and display video info
+            if selected_option in [DOWNLOAD_OPTION_1_VIDEO_MP4, DOWNLOAD_OPTION_2_VIDEO_MP3]:
+                self.download_video(url, quality, selected_option)
+            # Class method contains logic to download playlists and display playlist info
+            elif selected_option in [DOWNLOAD_OPTION_3_PLAYLIST_MP4, DOWNLOAD_OPTION_4_PLAYLIST_MP3]:
+                self.download_playlist(url, quality, selected_option)
+            # Display error if no download type selected
+            else:
+                self.display_error("Select a Download Type!")
+        # Display invalid URL error
+        except Exception:
+            self.display_error("Enter a valid type URL!")
+        # Clean up GUI after download
+        finally:
+            self.on_download_end()
+
+    # Handles video mp4/mp3 download in specified quality
+    def download_video(self, url: str, quality: str, selected_option: str) -> None:
+        # bool if mp4 download
+        is_mp4 = selected_option == DOWNLOAD_OPTION_1_VIDEO_MP4
+        # Call video as mp4 or mp3 depending on selection
+        download_as_mp4(url, quality) if is_mp4 else download_as_mp3(url)
+        # Display thumbnail and video info
+        self.display_video_info(url)
+        self.display_thumbnail_from_url(get_thumbnail_url(url))
+
+    # Handles playlist mp4/mp3 download in specified quality
+    # download_video() logic modified to fit playlist methods
+    def download_playlist(self, url: str, quality: str, selected_option: str) -> None:
+        is_mp4 = selected_option == DOWNLOAD_OPTION_3_PLAYLIST_MP4
+        download_playlist_as_mp4(url, quality) if is_mp4 else download_playlist_as_mp3(url)
+        playlist_info = get_playlist_info(url)
+        # Specify folder name content type suffix to display in info label
+        folder_name = f"{playlist_info[0]} ({'mp4' if is_mp4 else 'mp3'})"
+        self.display_playlist_info(url, folder_name)
+        self.display_thumbnail_from_url(get_thumbnail_url(url))
+
+    # Configures error label with passed message
+    def display_error(self, message: str) -> None:
+        self.error_info_label.configure(text=message)
+
     # Displays thumbnail image from thumbnail URL in relevant label
-    # Called upon in download_content to only display when download is complete
     def display_thumbnail_from_url(self, image_url: str) -> None:
         # Downloads and converts image data from JPEG URL
         response = requests.get(image_url)
@@ -200,7 +210,6 @@ class YouTubeDownloaderApp:
         self.video_label.configure(image=img_tk)
 
     # Displays video info message in relevant label
-    # Called upon in download_content to only display (if necessary) when download is complete
     def display_video_info(self, link: str) -> None:
         self.video_label.configure(text=f"   VIDEO DOWNLOADED TO DOWNLOADS FOLDER\n\n"
                                         f"   TITLE: {get_video_info(link)[0]} \n"
@@ -208,8 +217,6 @@ class YouTubeDownloaderApp:
                                    )
 
     # Displays playlist info message in relevant label
-    # Called upon in download_content to only display (if necessary) when download is complete
-    # folder_name is passed to display the suffix attached to folder (mp3/mp4)
     def display_playlist_info(self, link: str, folder_name: str) -> None:
         self.video_label.configure(text=f"   PLAYLIST DOWNLOADED TO "
                                         f"\n   '{folder_name}' FOLDER"
