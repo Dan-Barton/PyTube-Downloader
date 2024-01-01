@@ -127,23 +127,23 @@ class YouTubeDownloaderApp:
             if selected_option == DOWNLOAD_OPTION_1_VIDEO_MP4:
                 download_as_mp4(url, quality)
                 self.display_video_info(url)
-                self.display_thumbnail_from_url(get_thumbnail(url))
+                self.display_thumbnail_from_url(get_thumbnail_url(url))
             elif selected_option == DOWNLOAD_OPTION_2_VIDEO_MP3:
                 download_as_mp3(url)
                 self.display_video_info(url)
-                self.display_thumbnail_from_url(get_thumbnail(url))
+                self.display_thumbnail_from_url(get_thumbnail_url(url))
             # Playlist methods define folder_name to be displayed in info message (mp3/mp4 content in folder)
             # Name consists of playlist title and relevant mp3 or mp4 suffix
             elif selected_option == DOWNLOAD_OPTION_3_PLAYLIST_MP4:
                 download_playlist_as_mp4(url, quality)
                 folder_name = f"{get_playlist_info(url)[0]} (mp4)"
                 self.display_playlist_info(url, folder_name)
-                self.display_thumbnail_from_url(get_thumbnail(url))
+                self.display_thumbnail_from_url(get_thumbnail_url(url))
             elif selected_option == DOWNLOAD_OPTION_4_PLAYLIST_MP3:
                 download_playlist_as_mp3(url)
                 folder_name = f"{get_playlist_info(url)[0]} (mp3)"
                 self.display_playlist_info(url, folder_name)
-                self.display_thumbnail_from_url(get_thumbnail(url))
+                self.display_thumbnail_from_url(get_thumbnail_url(url))
             # If no combo box selection, display error without clearing entry field
             else:
                 self.error_info_label.configure(text="Select a Download Type!")

@@ -34,7 +34,7 @@ def get_playlist_info(link: str) -> [str]:
     return title, length
 
 # Return video/playlist thumbnail JPEG URL from link
-def get_thumbnail(link: str) -> str:
+def get_thumbnail_url(link: str) -> str:
     yt = YouTube(link)
 
     return yt.thumbnail_url
