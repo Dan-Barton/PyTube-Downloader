@@ -67,8 +67,8 @@ def download_as_mp3(link: str, target_directory=os.path.join(os.path.expanduser(
     # Edit file extension
     base, _ = os.path.splitext(download_file)
     new_file = base + '.mp3'
-    # Extract audio from audio only mp4
 
+    # Extract audio from audio only mp4
     audio_clip = AudioFileClip(download_file)
     # Write audio to new mp3 file
     audio_clip.write_audiofile(new_file, codec='mp3')
@@ -82,7 +82,7 @@ def download_as_mp3(link: str, target_directory=os.path.join(os.path.expanduser(
 def download_playlist_as_mp4(link: str, quality: str) -> None:
     playlist = Playlist(link)
 
-    # Create new folder for playlist in Downloads if no such folder exists
+    # Create new folder for playlist in Downloads if no such folder exists with file-type suffix
     target_directory = os.path.join(os.path.expanduser('~'), 'Downloads', f"{playlist.title} (mp4)")
     if not os.path.exists(target_directory):
         os.mkdir(target_directory)
