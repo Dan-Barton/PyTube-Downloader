@@ -52,7 +52,7 @@ class YouTubeDownloaderApp:
                                           fg_color="light green", button_color="light green",
                                           border_color="light green",
                                           dropdown_text_color="light green")
-        # Set initial instructing value
+        # Set initial instructing value and grid place combo box
         self.option_box.set("Download Type")
         self.option_box.grid(row=2, column=0, sticky="w", padx=20)
 
@@ -91,8 +91,8 @@ class YouTubeDownloaderApp:
         self.download_button.grid(row=5, column=1, sticky="w")
 
         # Declare indeterminate progressbar to serve as loading animation
-        self.progressbar = ctk.CTkProgressBar(master=self.main_frame, mode="indeterminate", progress_color=VERDANT_GREEN,
-                                              corner_radius=0)
+        self.progressbar = ctk.CTkProgressBar(master=self.main_frame, mode="indeterminate",
+                                              progress_color=VERDANT_GREEN, corner_radius=0)
 
         # Add error label below entry field, will display relevant error message as determined in download_func
         self.error_info_label = ctk.CTkLabel(master=self.main_frame, width=150, height=28, text="",
@@ -100,7 +100,7 @@ class YouTubeDownloaderApp:
                                              text_color="red", bg_color="transparent")
         self.error_info_label.grid(row=6, column=0, columnspan=2)
 
-        # Format and place video info label, stores both thumbnail image and text info
+        # Format and place video info label, will store both thumbnail image and text info
         self.video_label = ctk.CTkLabel(master=self.main_frame, image=None, text="", compound=ctk.LEFT,
                                         font=("Arial narrow", 17), text_color=VERDANT_GREEN, justify="left")
         self.video_label.grid(row=7, column=0, sticky="nw", padx=30, columnspan=2)
