@@ -1,14 +1,11 @@
 import customtkinter as ctk
 from io import BytesIO
-
-import pytube.exceptions
+from pytube.exceptions import RegexMatchError, VideoUnavailable
 from PIL import Image, ImageTk
 
 from threading import Thread
 import requests
 import traceback
-
-from pytube.exceptions import RegexMatchError
 
 from PyTubeServiceModule import *
 from config import *
@@ -98,7 +95,7 @@ class YouTubeDownloaderApp:
         self.progressbar = ctk.CTkProgressBar(master=self.main_frame, mode="indeterminate",
                                               progress_color=VERDANT_GREEN, corner_radius=0)
 
-        # Add error label below entry field, will display relevant error message as determined in download_func
+        # Add error label below entry field, to be configured to display relevant error
         self.error_info_label = ctk.CTkLabel(master=self.main_frame, width=150, height=28, text="",
                                              font=("Arial bold", 16),
                                              text_color="red", bg_color="transparent")
@@ -139,7 +136,7 @@ class YouTubeDownloaderApp:
         # Stop and hide progressbar
         self.progressbar.stop()
         self.progressbar.place_forget()
-        # Re-enabled buttons
+        # Re-enabled fields
         self.download_button.configure(state="normal")
         self.url_entry.configure(state="normal")
         # Clear link entry
@@ -165,9 +162,9 @@ class YouTubeDownloaderApp:
             # Display error if no download type selected
             else:
                 self.display_error("Select a Download Type!")
-        # Display invalid URL error
-        except (RegexMatchError, KeyError):
-            self.display_error("Enter a valid type URL!")
+        # Display invalid URL error (video URL error, playlist URL error)
+        except (RegexMatchError, KeyError, VideoUnavailable):
+            self.display_error("Enter a Valid Type URL and Ensure Content is Available")
         # Clean up GUI after download
         finally:
             self.on_download_end()
