@@ -24,8 +24,9 @@ class YouTubeDownloaderApp:
 
         # Initialize root window
         self.root = master
-        self.root.resizable(False, False)
+        self.root.resizable(True, False)
         self.root.geometry(SCREEN_SIZE)
+        self.root.minsize(WIDTH, HEIGHT)
         self.root.title(TITLE)
 
         # Initialize main frame
@@ -104,7 +105,7 @@ class YouTubeDownloaderApp:
         # Format and place video info label, will store both thumbnail image and text info
         self.video_label = ctk.CTkLabel(master=self.main_frame, image=None, text="", compound=ctk.LEFT,
                                         font=("Arial narrow", 17), text_color=VERDANT_GREEN, justify="left")
-        self.video_label.grid(row=7, column=0, sticky="nw", padx=30, columnspan=2)
+        self.video_label.grid(row=7, column=0, padx=30, columnspan=2)
 
     # Main download function, handles widgets during download state as well as download thread
     def download_func(self) -> None:
@@ -121,7 +122,7 @@ class YouTubeDownloaderApp:
         self.download_button.configure(state="disabled")
         self.url_entry.configure(state="disabled")
         # Place and start loading animation
-        self.progressbar.place(x=200, y=270)
+        self.progressbar.grid(row=7, column=0, columnspan=2)
         self.progressbar.start()
         # Reset Error Message
         self.error_info_label.configure(text="")
@@ -135,7 +136,7 @@ class YouTubeDownloaderApp:
     def on_download_end(self):
         # Stop and hide progressbar
         self.progressbar.stop()
-        self.progressbar.place_forget()
+        self.progressbar.grid_remove()
         # Re-enabled fields
         self.download_button.configure(state="normal")
         self.url_entry.configure(state="normal")

@@ -1,4 +1,6 @@
-SCREEN_SIZE = "620x460"
+WIDTH = 620
+HEIGHT = 460
+SCREEN_SIZE = f"{WIDTH}x{HEIGHT}"
 TITLE = "YouTube Video Downloader"
 
 DOWNLOAD_OPTION_1_VIDEO_MP4 = "Video as .mp4"
