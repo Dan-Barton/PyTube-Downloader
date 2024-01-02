@@ -48,10 +48,10 @@ def download_as_mp4(link: str, quality: str, target_directory=os.path.join(os.pa
         download_file = yt.streams.get_highest_resolution()
         res = yt.streams.get_highest_resolution().resolution
     elif quality == 'medium':
-        download_file = yt.streams.filter(res='720p').first()
+        download_file = yt.streams.filter(res='720p', mime_type='video/mp4', progressive=True).first()
         res = "720p"
     else:
-        download_file = yt.streams.filter(res='360p').first()
+        download_file = yt.streams.filter(res='360p', mime_type='video/mp4', progressive=True).first()
         res = "360p"
 
     download_file.download(output_path=target_directory, filename_prefix=f"({res}) ")
@@ -59,8 +59,8 @@ def download_as_mp4(link: str, quality: str, target_directory=os.path.join(os.pa
 # Download video as mp3 to specified or default Downloads DIR
 def download_as_mp3(link: str, target_directory=os.path.join(os.path.expanduser('~'), 'Downloads')) -> None:
     yt = YouTube(link)
-    audio_stream = yt.streams.filter(only_audio=True).first()
     # Downloads audio only mp4
+    audio_stream = yt.streams.filter(only_audio=True, mime_type="audio/mp4").first()
     # Adds "mp3" prefix to distinguish file from mp4 downloads in path
     download_file = audio_stream.download(output_path=target_directory, filename_prefix="(mp3) ")
 
