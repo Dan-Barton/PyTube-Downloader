@@ -1,10 +1,14 @@
 import customtkinter as ctk
 from io import BytesIO
+
+import pytube.exceptions
 from PIL import Image, ImageTk
 
 from threading import Thread
 import requests
 import traceback
+
+from pytube.exceptions import RegexMatchError
 
 from PyTubeServiceModule import *
 from config import *
@@ -162,7 +166,7 @@ class YouTubeDownloaderApp:
             else:
                 self.display_error("Select a Download Type!")
         # Display invalid URL error
-        except Exception:
+        except (RegexMatchError, KeyError):
             self.display_error("Enter a valid type URL!")
         # Clean up GUI after download
         finally:
