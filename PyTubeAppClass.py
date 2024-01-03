@@ -166,6 +166,9 @@ class YouTubeDownloaderApp:
         # Display invalid URL error (video URL error, playlist URL error)
         except (RegexMatchError, KeyError, VideoUnavailable):
             self.display_error("Enter a Valid Type URL and Ensure Content is Available")
+        # Display error if selected quality not available for content
+        except AttributeError:
+            self.display_error("Video Quality not Available")
         # Clean up GUI after download
         finally:
             self.on_download_end()

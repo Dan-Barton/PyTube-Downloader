@@ -44,15 +44,18 @@ def get_thumbnail_url(link: str) -> str:
 def download_as_mp4(link: str, quality: str, target_directory=os.path.join(os.path.expanduser('~'), 'Downloads')) -> None:
     yt = YouTube(link)
 
+    # Get highest res
     if quality == 'high':
         download_file = yt.streams.get_highest_resolution()
         res = yt.streams.get_highest_resolution().resolution
+    # 720p most frequently available, stream as medium res
     elif quality == 'medium':
         download_file = yt.streams.filter(res='720p', mime_type='video/mp4', progressive=True).first()
-        res = "720p"
+        res = '720p'
+    # Get lowest res
     else:
-        download_file = yt.streams.filter(res='360p', mime_type='video/mp4', progressive=True).first()
-        res = "360p"
+        download_file = yt.streams.get_lowest_resolution()
+        res = yt.streams.get_lowest_resolution().resolution
 
     download_file.download(output_path=target_directory, filename_prefix=f"({res}) ")
 
