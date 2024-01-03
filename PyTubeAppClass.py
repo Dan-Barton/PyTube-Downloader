@@ -119,7 +119,7 @@ class YouTubeDownloaderApp(ctk.CTk):
         self.on_download_start()
 
     # Handle GUI elements during download
-    def on_download_start(self):
+    def on_download_start(self) -> None:
         # Disable download button and entry field
         self.download_button.configure(state="disabled")
         self.url_entry.configure(state="disabled")
@@ -135,7 +135,7 @@ class YouTubeDownloaderApp(ctk.CTk):
         self.main_frame.update()
 
     # Clean up GUI after download
-    def on_download_end(self):
+    def on_download_end(self) -> None:
         # Stop and hide progressbar
         self.progressbar.stop()
         self.progressbar.grid_remove()
@@ -227,10 +227,3 @@ class YouTubeDownloaderApp(ctk.CTk):
         update_pytube()
         # Display GUI
         self.mainloop()
-
-
-# Main method constructs and runs YouTubeDownloaderApp with a CTk app as master
-# Called in driver file main.py if run as script
-def main() -> None:
-    app = YouTubeDownloaderApp()
-    app.run()
