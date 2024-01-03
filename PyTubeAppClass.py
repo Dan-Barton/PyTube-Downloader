@@ -1,10 +1,7 @@
 import customtkinter as ctk
-from io import BytesIO
 from pytube.exceptions import RegexMatchError, VideoUnavailable
-from PIL import Image, ImageTk
 
 from threading import Thread
-import requests
 import traceback
 
 from PyTubeServiceModule import *
@@ -15,6 +12,7 @@ from config import *
 - Downloader GUI Class inherits from ctk.CTk
 - Constants used found in config.py
 - Download methods used found in PyTubeServiceModule.py
+- PyTube updated on run
 """
 
 class YouTubeDownloaderApp(ctk.CTk):
@@ -167,10 +165,10 @@ class YouTubeDownloaderApp(ctk.CTk):
             # Display error if no download type selected
             else:
                 self.display_error("Select a Download Type!")
-        # Display invalid URL error (video URL error, playlist URL error) and Content Unavailable error
+        # Display invalid URL error (video URL error, playlist URL error) and Content Unavailable error message
         except (RegexMatchError, KeyError, VideoUnavailable):
             self.display_error("Enter a Valid Type URL and Ensure Content is Available")
-        # Display error if selected quality not available for content
+        # Display error message if selected quality not available for content
         except AttributeError:
             self.display_error("Video Quality not Available")
         # Clean up GUI after download
@@ -178,45 +176,34 @@ class YouTubeDownloaderApp(ctk.CTk):
             self.on_download_end()
 
     # Handles video mp4/mp3 download in specified quality
-    def download_video(self, url: str, quality: str, selected_option: str) -> None:
+    def download_video(self, link: str, quality: str, selected_option: str) -> None:
         # bool if mp4 download
         is_mp4 = selected_option == DOWNLOAD_OPTION_1_VIDEO_MP4
         # Call video as mp4 or mp3 depending on selection
-        download_as_mp4(url, quality) if is_mp4 else download_as_mp3(url)
+        download_as_mp4(link, quality) if is_mp4 else download_as_mp3(link)
         # Display thumbnail and video info
-        self.display_video_info(url)
-        self.display_thumbnail_from_url(get_thumbnail_url(url))
+        self.display_video_info(link)
+        self.display_thumbnail(link)
 
     # Handles playlist mp4/mp3 download in specified quality
     # download_video() logic modified to fit playlist methods
-    def download_playlist(self, url: str, quality: str, selected_option: str) -> None:
+    def download_playlist(self, link: str, quality: str, selected_option: str) -> None:
         is_mp4 = selected_option == DOWNLOAD_OPTION_3_PLAYLIST_MP4
-        download_playlist_as_mp4(url, quality) if is_mp4 else download_playlist_as_mp3(url)
-        playlist_info = get_playlist_info(url)
+        download_playlist_as_mp4(link, quality) if is_mp4 else download_playlist_as_mp3(link)
+        playlist_info = get_playlist_info(link)
         # Specify folder name content type suffix to display in info label
         folder_name = f"{playlist_info[0]} ({'mp4' if is_mp4 else 'mp3'})"
-        self.display_playlist_info(url, folder_name)
-        self.display_thumbnail_from_url(get_thumbnail_url(url))
+        self.display_playlist_info(link, folder_name)
+        self.display_thumbnail(link)
 
     # Configures error label with passed message
     def display_error(self, message: str) -> None:
         self.error_info_label.configure(text=message)
 
-    # Displays thumbnail image from thumbnail URL in relevant label
-    def display_thumbnail_from_url(self, image_url: str) -> None:
-        # Downloads and converts image data from JPEG URL
-        response = requests.get(image_url)
-        img_data = response.content
-        img = Image.open(BytesIO(img_data))
-
-        # Resizes image and converts to Tkinter appropriate image format
-        img = img.resize((200, 200))
-        img_tk = ImageTk.PhotoImage(img)
-        # Closes process
-        img.close()
-
-        # Configures label
-        self.video_label.configure(image=img_tk)
+    # Displays thumbnail image for content in relevant label
+    def display_thumbnail(self, link: str) -> None:
+        # Call service module method to return thumbnail image
+        self.video_label.configure(image=get_thumbnail(link))
 
     # Displays video info message in relevant label
     def display_video_info(self, link: str) -> None:

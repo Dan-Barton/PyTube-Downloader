@@ -1,7 +1,10 @@
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 from pytube import YouTube, Playlist
+from io import BytesIO
+from PIL import Image, ImageTk
 
 import os
+import requests
 import subprocess
 import datetime
 
@@ -33,11 +36,23 @@ def get_playlist_info(link: str) -> [str]:
 
     return title, length
 
-# Return video/playlist thumbnail JPEG URL from link
-def get_thumbnail_url(link: str) -> str:
+# Return video/playlist thumbnail as PhotoImage
+def get_thumbnail(link: str) -> ImageTk.PhotoImage:
     yt = YouTube(link)
+    image_url = yt.thumbnail_url
 
-    return yt.thumbnail_url
+    # Download and convert image data from JPEG URL
+    response = requests.get(image_url)
+    img_data = response.content
+    img = Image.open(BytesIO(img_data))
+
+    # Resize image and convert to Tkinter appropriate image format
+    img = img.resize((200, 200))
+    img_tk = ImageTk.PhotoImage(img)
+    # Close process
+    img.close()
+
+    return img_tk
 
 # Download video as mp4 in selected resolution to specified or default Downloads DIR
 # Resolution serves as prefix to distinguish stream as a unique file, not to be overridden
@@ -62,9 +77,10 @@ def download_as_mp4(link: str, quality: str, target_directory=os.path.join(os.pa
 # Download video as mp3 to specified or default Downloads DIR
 def download_as_mp3(link: str, target_directory=os.path.join(os.path.expanduser('~'), 'Downloads')) -> None:
     yt = YouTube(link)
-    # Downloads audio only mp4
+
+    # Download audio only mp4
     audio_stream = yt.streams.filter(only_audio=True, mime_type="audio/mp4").first()
-    # Adds "mp3" prefix to distinguish file from mp4 downloads in path
+    # Add "(mp3 )" prefix to distinguish file from mp4 downloads in path
     download_file = audio_stream.download(output_path=target_directory, filename_prefix="(mp3) ")
 
     # Edit file extension
