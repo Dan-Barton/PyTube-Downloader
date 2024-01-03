@@ -11,26 +11,30 @@ from PyTubeServiceModule import *
 from config import *
 
 
-# Downloader GUI Class
-# Constructed with modifying blank main CTk app
-# Constants used found in config.py
+"""
+- Downloader GUI Class inherits from ctk.CTk
+- Constants used found in config.py
+- Download methods used found in PyTubeServiceModule.py
+"""
 
-class YouTubeDownloaderApp:
-    # Constructs GUI and all widgets/elements on blank master CTk app
-    def __init__(self, master: ctk.CTk) -> None:
+class YouTubeDownloaderApp(ctk.CTk):
+    # Constructed with calling the constructor of the parent class (YouTubeDownloaderApp) such that it is the root
+    def __init__(self, *args, **kwargs) -> None:
+
+        super().__init__(*args, **kwargs)
+
         # Set appearance preferences
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("green")
 
-        # Initialize root window
-        self.root = master
-        self.root.resizable(True, False)
-        self.root.geometry(SCREEN_SIZE)
-        self.root.minsize(WIDTH, HEIGHT)
-        self.root.title(TITLE)
+        # Set parent class root window params
+        self.resizable(True, False)
+        self.geometry(SCREEN_SIZE)
+        self.minsize(WIDTH, HEIGHT)
+        self.title(TITLE)
 
-        # Initialize main frame
-        self.main_frame = ctk.CTkFrame(master=self.root)
+        # Initialize main frame with class root as parent to serve as staging ground for all widgets
+        self.main_frame = ctk.CTkFrame(master=self)
         self.main_frame.pack(pady=10, padx=10, fill="both", expand=True)
         self.main_frame.columnconfigure(0, weight=1)
         self.main_frame.columnconfigure(1, weight=1)
@@ -96,7 +100,7 @@ class YouTubeDownloaderApp:
         self.progressbar = ctk.CTkProgressBar(master=self.main_frame, mode="indeterminate",
                                               progress_color=VERDANT_GREEN, corner_radius=0)
 
-        # Add error label below entry field, to be configured to display relevant error
+        # Add error label below entry field, to be configured to display relevant error message
         self.error_info_label = ctk.CTkLabel(master=self.main_frame, width=150, height=28, text="",
                                              font=("Arial bold", 16),
                                              text_color="red", bg_color="transparent")
@@ -163,7 +167,7 @@ class YouTubeDownloaderApp:
             # Display error if no download type selected
             else:
                 self.display_error("Select a Download Type!")
-        # Display invalid URL error (video URL error, playlist URL error)
+        # Display invalid URL error (video URL error, playlist URL error) and Content Unavailable error
         except (RegexMatchError, KeyError, VideoUnavailable):
             self.display_error("Enter a Valid Type URL and Ensure Content is Available")
         # Display error if selected quality not available for content
@@ -230,16 +234,16 @@ class YouTubeDownloaderApp:
                                         f"   LENGTH: {get_playlist_info(link)[1]} videos"
                                    )
 
-    # Execute and display GUI
-    def mainloop(self) -> None:
+    # Update PyTube and run GUI
+    def run(self) -> None:
         # PyTube updated when starting program
         update_pytube()
         # Display GUI
-        self.root.mainloop()
+        self.mainloop()
 
 
 # Main method constructs and runs YouTubeDownloaderApp with a CTk app as master
 # Called in driver file main.py if run as script
 def main() -> None:
-    app = ctk.CTk()
-    YouTubeDownloaderApp(app).mainloop()
+    app = YouTubeDownloaderApp()
+    app.run()
