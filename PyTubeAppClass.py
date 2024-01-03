@@ -109,7 +109,7 @@ class YouTubeDownloaderApp:
 
     # Main download function, handles widgets during download state as well as download thread
     def download_func(self) -> None:
-        # Start downloading process as a separate thread to avoid freezing
+        # Start download process as a separate thread to avoid freezing
         download_thread = Thread(target=self.download_content, daemon=True)
         download_thread.start()
 
