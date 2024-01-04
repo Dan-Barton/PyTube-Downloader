@@ -1,6 +1,6 @@
 from PyTubeAppClass import *
 
-# DRIVER FILE
+# Driver file to serve as entry point, creates and executes instance of YouTubeDownloaderApp
 
 # Main method creates instance of YouTubeDownloaderApp "app" and runs it
 def main() -> None:

@@ -8,6 +8,14 @@ import requests
 import subprocess
 import datetime
 
+"""
+- Service Module
+- Contains all:
+    - download functions
+    - content info functions
+    - Thumbnail image extraction function
+"""
+
 # TEST VIDEO AND PLAYLIST
 
 # https://www.youtube.com/watch?v=FAyKDaXEAgc - 10 second video

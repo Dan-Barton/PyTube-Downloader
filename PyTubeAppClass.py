@@ -9,7 +9,8 @@ from config import *
 
 
 """
-- Downloader GUI Class inherits from ctk.CTk
+App GUI Class file
+- Downloader GUI Class YouTubeDownloaderApp inherits from ctk.CTk as root window
 - Constants used found in config.py
 - Download methods used found in PyTubeServiceModule.py
 - PyTube updated on run
