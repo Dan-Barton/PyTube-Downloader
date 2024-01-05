@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from pytube.exceptions import RegexMatchError, VideoUnavailable
+from pytube.exceptions import RegexMatchError, VideoUnavailable, AgeRestrictedError
 
 from threading import Thread
 import traceback
@@ -166,6 +166,8 @@ class YouTubeDownloaderApp(ctk.CTk):
             # Display error if no download type selected
             else:
                 self.display_error("Select a Download Type!")
+        except AgeRestrictedError:
+            self.display_error("Video is Age Restricted")
         # Display invalid URL error (video URL error, playlist URL error) and Content Unavailable error message
         except (RegexMatchError, KeyError, VideoUnavailable):
             self.display_error("Enter a Valid Type URL and Ensure Content is Available")
