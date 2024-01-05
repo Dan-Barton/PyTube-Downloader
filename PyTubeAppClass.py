@@ -167,13 +167,13 @@ class YouTubeDownloaderApp(ctk.CTk):
             else:
                 self.display_error("Select a Download Type!")
         except AgeRestrictedError:
-            self.display_error("Video is Age Restricted")
+            self.display_error("Content is Age Restricted")
         # Display invalid URL error (video URL error, playlist URL error) and Content Unavailable error message
         except (RegexMatchError, KeyError, VideoUnavailable):
             self.display_error("Enter a Valid Type URL and Ensure Content is Available")
         # Display error message if selected quality not available for content
         except AttributeError:
-            self.display_error("Video Quality not Available")
+            self.display_error("Quality not Available")
         # Clean up GUI after download
         finally:
             self.on_download_end()
