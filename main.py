@@ -1,6 +1,7 @@
 from tkinter.messagebox import showerror
 
 import threading
+import contextlib
 
 from PyTubeAppClass import *
 
@@ -20,4 +21,7 @@ def main() -> None:
 # threading.excepthook specified
 if __name__ == "__main__":
     threading.excepthook = unexpectedError
-    main()
+
+    # Run main and write (Moviepy) output to null file (necessary to package windowed executable)
+    with contextlib.redirect_stdout(open(os.devnull, 'w')):
+        main()

@@ -97,8 +97,8 @@ def download_as_mp3(link: str, target_directory=os.path.join(os.path.expanduser(
 
     # Extract audio from audio only mp4
     audio_clip = AudioFileClip(download_file)
-    # Write audio to new mp3 file
-    audio_clip.write_audiofile(new_file, codec='mp3')
+    # Write audio to new mp3 file, hide Moviepy progress bar
+    audio_clip.write_audiofile(new_file, codec='mp3', logger=None)
     # Close process
     audio_clip.close()
 
