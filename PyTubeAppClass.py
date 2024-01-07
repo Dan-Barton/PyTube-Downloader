@@ -65,21 +65,21 @@ class YouTubeDownloaderApp(ctk.CTk):
         # Buttons placed vertically atop on another and aligned horizontally
         # Buttons update selected_quality class variable (set "low" by default)
         self.selected_quality = ctk.StringVar(value="low")
-        self.low_quality_radio = ctk.CTkRadioButton(master=self.main_frame, text="Low Quality       ",
+        self.low_quality_radio = ctk.CTkRadioButton(master=self.main_frame, text="Low Quality          ",
                                                     variable=self.selected_quality,
                                                     value="low",
                                                     font=("Arial bold", 12), text_color="light green")
-        self.low_quality_radio.grid(row=2, column=1)
+        self.low_quality_radio.grid(row=2, column=1, sticky="e")
         self.medium_quality_radio = ctk.CTkRadioButton(master=self.main_frame, text="Medium Quality",
                                                        variable=self.selected_quality,
                                                        value="medium",
                                                        font=("Arial bold", 12), text_color="light green")
-        self.medium_quality_radio.grid(row=3, column=1)
-        self.high_quality_radio = ctk.CTkRadioButton(master=self.main_frame, text="High Quality      ",
+        self.medium_quality_radio.grid(row=3, column=1, sticky="e", padx=10)
+        self.high_quality_radio = ctk.CTkRadioButton(master=self.main_frame, text="High Quality         ",
                                                      variable=self.selected_quality,
                                                      value="high",
                                                      font=("Arial bold", 12), text_color="light green")
-        self.high_quality_radio.grid(row=4, column=1)
+        self.high_quality_radio.grid(row=4, column=1, sticky="e")
 
         # URL entry space placed at the center of the screen below the selection options
         # Formatted and placeholder instruction value set
