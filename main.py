@@ -9,7 +9,7 @@ from PyTubeAppClass import *
 
 # Substitute method as threading.excepthook
 # Designed to handle unexpected exceptions in download thread by displaying exception value in message box
-def unexpectedError(args):
+def unexpectedError(args: threading.ExceptHookArgs) -> None:
     showerror('Error', args.exc_value)
 
 # Main method creates instance of YouTubeDownloaderApp "app" and runs it
