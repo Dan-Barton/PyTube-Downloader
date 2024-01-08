@@ -17,11 +17,11 @@ def main() -> None:
     app = YouTubeDownloaderApp()
     app.run()
 
-# Call main() method to construct and display GUI from PyTubeAppClass.py if run as script
-# threading.excepthook specified
-if __name__ == "__main__":
-    threading.excepthook = unexpectedError
 
+# Call main() method to construct and display GUI from PyTubeAppClass.py if run as script
+if __name__ == "__main__":
+    # threading.excepthook specified
+    threading.excepthook = unexpectedError
     # Run main and write (Moviepy) output to null file (necessary to package windowed executable)
     with contextlib.redirect_stdout(open(os.devnull, 'w')):
         main()
